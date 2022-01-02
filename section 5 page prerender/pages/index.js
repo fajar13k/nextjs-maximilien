@@ -31,6 +31,12 @@ export async function getStaticProps() {
     };
   }
 
+  if (data.products.length === 0) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       products: data.products,
