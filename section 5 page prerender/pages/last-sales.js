@@ -1,37 +1,56 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
-export default function LastSalesPage() {
-  const [sales, setSales] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+function LastSalesPage(props) {
+  const [sales, setSales] = useState(props.sales);
+  // const [isLoading, setIsLoading] = useState(false);
+
+  const { data, error } = useSWR(
+    "https://nextjs-course-13d48-default-rtdb.asia-southeast1.firebasedatabase.app/sales.json"
+  );
 
   useEffect(() => {
-    setIsLoading(true);
-    fetch(
-      "https://nextjs-course-13d48-default-rtdb.asia-southeast1.firebasedatabase.app/sales.json"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const transformedSales = [];
+    if (data) {
+      const transformedSales = [];
 
-        for (const key in data) {
-          transformedSales.push({
-            id: key,
-            username: data[key].username,
-            volume: data[key].volume,
-          });
-        }
+      for (const key in data) {
+        transformedSales.push({
+          id: key,
+          username: data[key].username,
+          volume: data[key].volume,
+        });
+      }
 
-        setSales(transformedSales);
-        setIsLoading(false);
-      });
-  }, []);
+      setSales(transformedSales);
+    }
+  }, [data]);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   fetch('https://nextjs-course-c81cc-default-rtdb.firebaseio.com/sales.json')
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const transformedSales = [];
+
+  //       for (const key in data) {
+  //         transformedSales.push({
+  //           id: key,
+  //           username: data[key].username,
+  //           volume: data[key].volume,
+  //         });
+  //       }
+
+  //       setSales(transformedSales);
+  //       setIsLoading(false);
+  //     });
+  // }, []);
+
+  if (error) {
+    return <p>Failed to load.</p>;
   }
 
-  if (!sales) {
-    return <p>No data yet.</p>;
+  if (!data && !sales) {
+    return <p>Loading...</p>;
   }
 
   return (
@@ -44,3 +63,24 @@ export default function LastSalesPage() {
     </ul>
   );
 }
+
+export async function getStaticProps() {
+  const response = await fetch(
+    "https://nextjs-course-13d48-default-rtdb.asia-southeast1.firebasedatabase.app/sales.json"
+  );
+  const data = await response.json();
+
+  const transformedSales = [];
+
+  for (const key in data) {
+    transformedSales.push({
+      id: key,
+      username: data[key].username,
+      volume: data[key].volume,
+    });
+  }
+
+  return { props: { sales: transformedSales } };
+}
+
+export default LastSalesPage;
