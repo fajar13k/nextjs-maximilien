@@ -1,5 +1,11 @@
-export default function handler(req, res) {
+import { MongoClient } from "mongodb";
+
+export default async function handler(req, res) {
   const eventId = req.query.eventId;
+
+  const client = await MongoClient.connect(
+    "mongodb+srv://root:root@cluster0.9fe0w.mongodb.net/events?retryWrites=true&w=majority"
+  );
 
   if (req.method === "POST") {
     // Add server-side validation
@@ -18,13 +24,20 @@ export default function handler(req, res) {
     }
 
     const newComment = {
-      id: new Date().toISOString(),
       email,
       name,
       text,
+      eventId,
     };
 
-    console.log(newComment);
+    const db = client.db();
+
+    const result = await db.collection("comments").insertOne(newComment);
+
+    console.log(result);
+
+    newComment.id = result.insertedId;
+
     res.status(201).json({ message: "Comment added!", comment: newComment });
   }
 
@@ -39,4 +52,6 @@ export default function handler(req, res) {
       .status(200)
       .json({ message: "Successfully retrieving data", comments: dummyList });
   }
+
+  client.close();
 }
