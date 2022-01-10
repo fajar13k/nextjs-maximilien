@@ -42,15 +42,17 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-    const dummyList = [
-      { id: "c1", name: "Max", text: "First comment!" },
-      { id: "c2", name: "Manuel", text: "Second comment!" },
-    ];
+    const db = client.db();
 
-    console.log(dummyList);
+    const documents = await db
+      .collection("comments")
+      .find()
+      .sort({ _id: -1 })
+      .toArray();
+
     res
       .status(200)
-      .json({ message: "Successfully retrieving data", comments: dummyList });
+      .json({ message: "Successfully retrieving data", comments: documents });
   }
 
   client.close();
