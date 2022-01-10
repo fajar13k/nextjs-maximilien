@@ -43,7 +43,7 @@ function NewsletterRegistration() {
       .catch((error) => {
         notificationCtx.showNotification({
           title: "Error!",
-          message: error.message | "Failed to register for newsletter.",
+          message: error.message || "Failed to register for newsletter.",
           status: "error",
         });
       });
