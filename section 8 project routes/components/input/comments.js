@@ -9,15 +9,18 @@ function Comments(props) {
   const { eventId } = props;
   const notificationCtx = useContext(NotificationContext);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     if (showComments) {
+      setIsLoading(true);
       fetch(`/api/comments/${eventId}`)
         .then((response) => response.json())
         .then((data) => {
           setComments(data.comments);
+          setIsLoading(false);
         });
     }
   }, [showComments]);
@@ -27,6 +30,12 @@ function Comments(props) {
   }
 
   function addCommentHandler(commentData) {
+    notificationCtx.showNotification({
+      title: "Sending comment...",
+      message: "Your comment is currently being stored in a database.",
+      status: "pending",
+    });
+
     fetch(`/api/comments/${eventId}`, {
       method: "POST",
       body: JSON.stringify(commentData),
@@ -65,7 +74,8 @@ function Comments(props) {
         {showComments ? "Hide" : "Show"} Comments
       </button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
-      {showComments && <CommentList items={comments} />}
+      {showComments && !isLoading && <CommentList items={comments} />}
+      {showComments && isLoading && <p>Loading...</p>}
     </section>
   );
 }
