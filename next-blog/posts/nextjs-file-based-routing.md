@@ -1,5 +1,5 @@
 ---
-title: nextjs-file-based-routing
+title: NextJS File Based Routing
 date: "2022-10-05"
 image: nextjs-file-based-routing.png
 excerpt: NextJS is the future of building apps, and here is how the routing handled.
