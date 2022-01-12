@@ -1,10 +1,10 @@
-import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import Image from "next/image";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
-import classes from "./post-content.module.css";
 import PostHeader from "./post-header";
+import classes from "./post-content.module.css";
 
 export default function PostContent(props) {
   const { post } = props;
@@ -12,7 +12,7 @@ export default function PostContent(props) {
   const imagePath = `/images/posts/${post.slug}/${post.image}`;
 
   const customRenderers = {
-    // image(image) {
+    // img(image) {
     //   return (
     //     <Image
     //       src={`/images/posts/${post.slug}/${image.src}`}
@@ -22,8 +22,7 @@ export default function PostContent(props) {
     //     />
     //   );
     // },
-
-    paragraph(paragraph) {
+    p(paragraph) {
       const { node } = paragraph;
 
       if (node.children[0].tagName === "img") {
