@@ -21,6 +21,10 @@ export default function ContactForm() {
           "Content-Type": "application/json",
         },
       });
+
+      setEnteredName("");
+      setEnteredEmail("");
+      setEnteredMessage("");
     } catch (error) {
       console.log(error);
     }
