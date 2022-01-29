@@ -19,6 +19,7 @@ export default NextAuth({
         });
 
         if (!user) {
+          client.close();
           throw new Error("No user found");
         }
 
@@ -28,6 +29,7 @@ export default NextAuth({
         );
 
         if (!isValid) {
+          client.close();
           throw new Error("Could not log you in!");
         }
 
